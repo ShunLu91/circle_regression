@@ -115,7 +115,9 @@ for _ in range(1000):
     # params = y_test * 200
     #     print(detected)
     #     print(y_test*200)
-    results.append(iou(params, pred[0]*size))
+    img_iou = iou(params, pred[0]*size)
+    results.append(img_iou)
+    print('params:', params, 'pred:', pred[0]*size, 'iou:', img_iou)
 results = np.array(results)
 print((results > 0.7).sum())
 #
