@@ -160,7 +160,7 @@ def main():
         detected = find_circle(img, cnn)
         results.append(iou(params, detected))
     results = np.array(results)
-    print((results > 0.7).mean())
+    print((results > 0.7).sum())
 
 
 main()
