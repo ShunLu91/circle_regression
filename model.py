@@ -1,6 +1,6 @@
 import re
+import argparse
 import numpy as np
-import argparse as arg
 import tensorflow as tf
 import os, glob, datetime
 import keras.layers as KL
@@ -35,8 +35,11 @@ size = 200
 x_train, y_train = data_generator(10000, size, 50, 2)
 print('x_train:', x_train.shape, 'y_train:', y_train.shape)
 
-# parser = argparse.ArgumentParser()
-# args = parser.parse_args()
+parser = argparse.ArgumentParser()
+parser.add_argument('--epochs', type=int, default=100, help='train epochs')
+parser.add_argument('--batch', type=int, default=96, help='train batch size')
+parser.add_argument('--lr', type=float, default=0.05, help='initial learning rate')
+args = parser.parse_args()
 save_dir = os.path.join('models')
 
 if not os.path.exists(save_dir):
@@ -92,7 +95,7 @@ def log(*args, **kwargs):
 
 
 def lr_schedule(epoch):
-    initial_lr = 0.001
+    initial_lr = args.lr
     if epoch <= 50:
         lr = initial_lr
     elif epoch <= 100:
@@ -123,8 +126,9 @@ checkpointer = ModelCheckpoint(os.path.join(save_dir, 'model_{epoch:03d}.hdf5'),
                                save_weights_only=False, period=10)
 csv_logger = CSVLogger(os.path.join(save_dir, 'log.csv'), append=True, separator=',')
 lr_scheduler = LearningRateScheduler(lr_schedule)
-history = model.fit(x_train, y_train, initial_epoch=initial_epoch, shuffle=True, validation_split=0.3, batch_size=4,
-                    epochs=100, verbose=1, callbacks=[checkpointer, csv_logger, lr_scheduler])
+history = model.fit(x_train, y_train, initial_epoch=initial_epoch, shuffle=True, validation_split=0.3,
+                    batch_size=args.batch, epochs=args.epochs, verbose=1,
+                    callbacks=[checkpointer, csv_logger, lr_scheduler])
 
 # model = load_model(os.path.join('models', 'model_010.hdf5'), compile=False)
 results = []
