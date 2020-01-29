@@ -5,6 +5,7 @@ import tensorflow as tf
 import os, glob, datetime
 import keras.layers as KL
 import keras.backend as K
+from keras.optimizers import SGD
 import matplotlib.pyplot as plt
 from keras.models import Model, load_model
 from keras.callbacks import CSVLogger, ModelCheckpoint, LearningRateScheduler
@@ -69,7 +70,7 @@ def model_graph(size, filters, image_channels=1):
 
     x = KL.Flatten()(x)
     x = KL.Dense(1024, activation='relu')(x)
-    x = KL.Dropout(0.5)(x)
+    # x = KL.Dropout(0.5)(x)
     x = KL.Dense(3)(x)
     model = Model(inputs=inpt, outputs=x)
 
@@ -121,7 +122,8 @@ if initial_epoch > 0:
     model = load_model(os.path.join(save_dir, 'model_%03d.hdf5' % initial_epoch), compile=False)
 
 # compile the model
-model.compile(optimizer='adam', loss='mean_squared_error')
+optim = SGD(lr=args.lr, momentum=0.9, decay=0.0005)
+model.compile(optimizer=optim, loss='mean_squared_error')
 checkpointer = ModelCheckpoint(os.path.join(save_dir, 'model_{epoch:03d}.hdf5'), verbose=1,
                                save_weights_only=False, period=10)
 csv_logger = CSVLogger(os.path.join(save_dir, 'log.csv'), append=True, separator=',')
