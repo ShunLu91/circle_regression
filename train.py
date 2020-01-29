@@ -108,7 +108,7 @@ results = []
 for i in range(1000):
     # params, img = noisy_circle(200, 50, 2)
     img = x_train[i]
-    params = y_train[i]
+    params = y_train[i] * 200
     # detected = find_circle(img)
     # print(img)
     img = img.reshape((-1, img.shape[0], img.shape[1], 1))
