@@ -122,7 +122,7 @@ def train_model():
     #             optimizer=tf.keras.optimizers.Adam(),
     #             metrics=['mse', 'mae', 'cosine'])
     # optim = SGD(lr=0.001, momentum=0.9, decay=0.0005)
-    cnn.compile(optimizer=Adam, loss='mean_squared_error', metrics=['mse', 'mae', 'cosine'])
+    cnn.compile(optimizer=Adam(), loss='mean_squared_error', metrics=['mse', 'mae', 'cosine'])
     cnn.fit(Xtrain, Ytrain,
             batch_size=64,
             epochs=20,
