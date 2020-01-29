@@ -138,7 +138,7 @@ for _ in range(1000):
     params, img = noisy_circle(200, 50, 2)
     # detected = find_circle(img)
     # print(img)
-    # img = img.reshape((-1, img.shape[0], img.shape[1], 1))
+    img = img.reshape((-1, img.shape[0], img.shape[1], 1))
     # x_ts = []
     # y_ts = []
     # x_ts.append(np.asarray(params))
