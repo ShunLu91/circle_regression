@@ -124,7 +124,7 @@ def train_model():
     cnn.compile(optimizer=Adam(), loss='mean_squared_error', metrics=['mse', 'mae', 'cosine'])
     cnn.fit(Xtrain, Ytrain,
             batch_size=64,
-            epochs=30,
+            epochs=100,
             verbose=2,
             validation_data=(Xtest, Ytest))
 
