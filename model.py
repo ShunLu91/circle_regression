@@ -24,7 +24,6 @@ def data_generator(samples, size, radius, noise):
         para, img = noisy_circle(size, radius, noise)
         params.append(np.asarray(para))
         images.append(img)
-        print(para)
     images = np.array(images, dtype=np.float)
     images = images.reshape((-1, images.shape[1], images.shape[2], 1))
     # params = np.array(params, dtype=np.float64) / size
