@@ -158,6 +158,7 @@ def main():
         params, img = noisy_circle(200, 50, 2)
         # noisy circles in 200*200 pixel matrix (ndarray), with radius from 10 to 50, and noise=2
         detected = find_circle(img, cnn)
+        print(iou(params, detected))
         results.append(iou(params, detected))
     results = np.array(results)
     print((results > 0.7).sum())
