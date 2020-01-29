@@ -5,7 +5,7 @@ from skimage.draw import circle_perimeter_aa
 import matplotlib.pyplot as plt
 from keras.layers import Dense, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
 import os
-from keras.optimizers import SGD
+from keras.optimizers import SGD, Adam
 from keras.models import model_from_json, Sequential
 
 
@@ -121,8 +121,8 @@ def train_model():
     # cnn.compile(loss=tf.keras.losses.mean_squared_error,
     #             optimizer=tf.keras.optimizers.Adam(),
     #             metrics=['mse', 'mae', 'cosine'])
-    optim = SGD(lr=0.001, momentum=0.9, decay=0.0005)
-    cnn.compile(optimizer=optim, loss='mean_squared_error', metrics=['mse', 'mae', 'cosine'])
+    # optim = SGD(lr=0.001, momentum=0.9, decay=0.0005)
+    cnn.compile(optimizer=Adam, loss='mean_squared_error', metrics=['mse', 'mae', 'cosine'])
     cnn.fit(Xtrain, Ytrain,
             batch_size=64,
             epochs=20,
