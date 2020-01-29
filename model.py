@@ -114,7 +114,7 @@ def lr_schedule(epoch):
 
 
 model = model_graph(size, filters=32)
-# model.summary()
+model.summary()
 
 initial_epoch = findLastCheckpoint(save_dir=save_dir)
 if initial_epoch > 0:
@@ -148,6 +148,7 @@ for _ in range(1000):
     # x_ts = np.array(x_ts, dtype=np.float64) / size
     # x_test, y_test = data_generator(1, size, 50, 0.5)
     pred = model.predict(img)
+    print(pred)
     # detected = pred * 200
     # params = y_test * 200
     #     print(detected)
