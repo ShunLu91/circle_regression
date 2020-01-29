@@ -111,12 +111,11 @@ for _ in range(1000):
     # print(img)
     img = img.reshape((-1, img.shape[0], img.shape[1], 1))
     pred = model.predict(img)
-    print('pred:', pred)
     # detected = pred * 200
     # params = y_test * 200
     #     print(detected)
     #     print(y_test*200)
-    results.append(iou(params, pred))
+    results.append(iou(params, pred[0]*size))
 results = np.array(results)
 print((results > 0.7).sum())
 #
