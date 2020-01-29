@@ -105,8 +105,10 @@ history = model.fit(x_train, y_train, initial_epoch=initial_epoch, shuffle=True,
 
 # model = load_model(os.path.join('models', 'model_010.hdf5'), compile=False)
 results = []
-for _ in range(1000):
-    params, img = noisy_circle(200, 50, 2)
+for i in range(1000):
+    # params, img = noisy_circle(200, 50, 2)
+    img = x_train[i]
+    params = y_train[i]
     # detected = find_circle(img)
     # print(img)
     img = img.reshape((-1, img.shape[0], img.shape[1], 1))
