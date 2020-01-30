@@ -119,6 +119,40 @@ def model_graph2():
     return model
 
 
+def model_light():
+    input = Input(shape=(args.img_size, args.img_size, 1), name='input_images')
+    x = Conv2D(32, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal')(input)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
+
+    x = Conv2D(64, kernel_size=3, strides=(2, 2), padding='same', kernel_initializer='glorot_normal')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Conv2D(64, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
+
+    x = Conv2D(128, kernel_size=3, strides=(2, 2), padding='same', kernel_initializer='glorot_normal')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Conv2D(128, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
+
+    x = Flatten()(x)
+    x = Dense(256, activation='relu')(x)
+    x = Dense(128, activation='relu')(x)
+    y = Dense(3)(x)
+
+    model = Model(inputs=input, outputs=y)
+    model.compile(optimizer=Adam(), loss='mean_squared_error', metrics=['mse', 'mae'])
+
+    return model
+
+
 def find_circle(img, model):
     img = img.reshape(1, 200, 200, 1)
     pred = model.predict(img)
@@ -135,7 +169,8 @@ if __name__ == '__main__':
     img_test = images[split:]
     param_train = params[:split]
     param_test = params[split:]
-    model = model_graph()
+    model = model_light()
+    model.summary()
     # model train
     model.fit(img_train, param_train, batch_size=args.batch, epochs=args.epochs, verbose=2,
               validation_data=(img_test, param_test))
