@@ -19,7 +19,6 @@ parser.add_argument('--seed', type=int, default=2020, help='num of training imag
 args = parser.parse_args()
 print(args)
 
-np.random.seed(args.seed)
 # generate data
 def data_generator(samples, size, radius, noise):
     params = []
@@ -128,6 +127,8 @@ def find_circle(img, model):
 
 
 if __name__ == '__main__':
+    # set random seed
+    np.random.seed(args.seed)
     images, params = data_generator(args.num, args.img_size, args.radius, args.noise)
     split = int(args.spilt_rate * args.num)
     img_train = images[:split]
@@ -135,10 +136,17 @@ if __name__ == '__main__':
     param_train = params[:split]
     param_test = params[split:]
     model = model_graph()
-    # model = model_graph2()
+    # model train
     model.fit(img_train, param_train, batch_size=args.batch, epochs=args.epochs, verbose=2,
               validation_data=(img_test, param_test))
 
+    # model save
+    model_json = model.to_json()
+    with open("model.json", "w") as json_file:
+        json_file.write(model_json)
+    model.save_weights("trained_model.h5")
+
+    # evaluate
     results = []
     for _ in range(1000):
         params, img = noisy_circle(args.img_size, args.radius, args.noise)
