@@ -17,6 +17,7 @@ args = parser.parse_args()
 print(args)
 
 
+# generate data
 def data_generator(samples, size, radius, noise):
     params = []
     images = []
@@ -30,64 +31,41 @@ def data_generator(samples, size, radius, noise):
     return images, params
 
 
-def model_graph():
-    # images = np.zeros((args.num, args.img_size, args.img_size), dtype=np.float)
-    # # num circles in image = 1, number of outputs req'd = 3 (r,c,rad)
-    # params = np.zeros((args.num, 1, 3), dtype=np.float)
-    # for i in range(args.num):
-    #     loc, images[i] = noisy_circle(img_size, rad, noise)
-    #     params[i] = np.array(loc).reshape(1, 3)
-    #
-    # X = images.reshape(images.shape[0], 200, 200, 1)
-    # Y = params.reshape(args.num, -1)  # /img_size #normalize to bring between 0 and 1
-
-    images, params = data_generator(args.num, args.img_size, args.radius, args.noise)
-    split = int(0.8 * args.num)
-    Xtrain = images[:split]
-    Xtest = images[split:]
-    Ytrain = params[:split]
-    Ytest = params[split:]
-
-    cnn = Sequential()
-    cnn.add(Conv2D(64, kernel_size=3, strides=(1, 1), data_format='channels_last', input_shape=(200, 200, 1),
-                   padding='same', kernel_initializer='glorot_normal'))
-    cnn.add(BatchNormalization())
-    cnn.add(Activation('relu'))
-    cnn.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-    cnn.add(Conv2D(128, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
-    cnn.add(BatchNormalization())
-    cnn.add(Activation('relu'))
-    cnn.add(Conv2D(128, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
-    cnn.add(BatchNormalization())
-    cnn.add(Activation('relu'))
-    cnn.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-    cnn.add(Conv2D(256, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
-    cnn.add(BatchNormalization())
-    cnn.add(Activation('relu'))
-    cnn.add(Conv2D(256, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
-    cnn.add(BatchNormalization())
-    cnn.add(Activation('relu'))
-    cnn.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-    cnn.add(Conv2D(512, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
-    cnn.add(BatchNormalization())
-    cnn.add(Activation('relu'))
-    cnn.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-    cnn.add(Conv2D(512, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
-    cnn.add(BatchNormalization())
-    cnn.add(Activation('relu'))
-    cnn.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-    cnn.add(Flatten())
-    cnn.add(Dense(1024, activation='relu'))
-    cnn.add(Dense(512, activation='relu'))
-    cnn.add(Dense(params.shape[-1]))
-    cnn.compile(optimizer=Adam(), loss='mean_squared_error', metrics=['mse', 'mae', 'cosine'])
-    cnn.fit(Xtrain, Ytrain,
-            batch_size=args.batch,
-            epochs=args.epochs,
-            verbose=1,
-            validation_data=(Xtest, Ytest))
-
-    return cnn
+def model_graph2():
+    model = Sequential()
+    model.add(Conv2D(64, kernel_size=3, strides=(1, 1), data_format='channels_last', input_shape=(200, 200, 1),
+                     padding='same', kernel_initializer='glorot_normal'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Conv2D(128, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Conv2D(128, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Conv2D(256, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Conv2D(256, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Conv2D(512, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Conv2D(512, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Flatten())
+    model.add(Dense(1024, activation='relu'))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dense(params.shape[-1]))
+    model.compile(optimizer=Adam(), loss='mean_squared_error', metrics=['mse', 'mae'])
+    return model
 
 
 def find_circle(img, model):
@@ -98,20 +76,16 @@ def find_circle(img, model):
 
 
 if __name__ == '__main__':
-    # if os.path.isfile('cnn_deeper.h5'):
-    #     json_file = open('cnn_deeper.json', 'r')
-    #     cnn_json = json_file.read()
-    #     json_file.close()
-    #     cnn = model_from_json(cnn_json)
-    #     cnn.load_weights("cnn_deeper.h5")
-    # else:
-    #     model = model_graph()
-    #     cnn_json = model.to_json()
-    #     with open("cnn_deeper.json", "w") as json_file:
-    #         json_file.write(cnn_json)
-    #     model.save_weights("cnn_deeper.h5")
+    images, params = data_generator(args.num, args.img_size, args.radius, args.noise)
+    split = int(0.7 * args.num)
+    img_train = images[:split]
+    img_test = images[split:]
+    param_train = params[:split]
+    param_test = params[split:]
+    model = model_graph2()
+    model.fit(img_train, param_train, batch_size=args.batch, epochs=args.epochs, verbose=2,
+              validation_data=(img_test, param_test))
 
-    model = model_graph()
     results = []
     for _ in range(1000):
         params, img = noisy_circle(args.img_size, args.radius, args.noise)
