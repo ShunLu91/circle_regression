@@ -29,7 +29,6 @@ def data_generator(samples, size, radius, noise):
         images.append(img)
     images = np.array(images, dtype=np.float)
     images = images.reshape((-1, images.shape[1], images.shape[2], 1))
-    params = np.array(params, dtype=np.float64) / size
     params = np.array(params, dtype=np.float64)
     return images, params
 
@@ -110,7 +109,7 @@ results = []
 for i in range(1000):
     # params, img = noisy_circle(200, 50, 2)
     img = x_train[i]
-    params = y_train[i] * 200
+    params = y_train[i]
     # detected = find_circle(img)
     # print(img)
     img = img.reshape((-1, img.shape[0], img.shape[1], 1))
