@@ -1,9 +1,10 @@
 import os
 import argparse
 from main import *
+from keras.models import Model
 from keras.optimizers import Adam
 from keras.models import model_from_json, Sequential
-from keras.layers import Dense, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
+from keras.layers import Input, Dense, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
 
 # read arguments from command
 parser = argparse.ArgumentParser('Circle_Regression')
@@ -31,13 +32,58 @@ def data_generator(samples, size, radius, noise):
     return images, params
 
 
+def model_graph():
+    input = Input(shape=(args.img_size, args.img_size, 1), name='input_images')
+    x = Conv2D(64, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal')(input)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
+
+    x = Conv2D(128, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Conv2D(128, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
+
+    x = Conv2D(256, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Conv2D(256, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
+
+    x = Conv2D(512, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
+
+    x = Conv2D(512, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
+
+    x = Flatten()(x)
+    x = Dense(1024, activation='relu')(x)
+    x = Dense(512, activation='relu')(x)
+    y = Dense(3)(x)
+
+    model = Model(inputs=input, outputs=y)
+    model.compile(optimizer=Adam(), loss='mean_squared_error', metrics=['mse', 'mae'])
+
+    return model
+
+
 def model_graph2():
     model = Sequential()
-    model.add(Conv2D(64, kernel_size=3, strides=(1, 1), data_format='channels_last', input_shape=(200, 200, 1),
-                     padding='same', kernel_initializer='glorot_normal'))
+    model.add(Conv2D(64, kernel_size=3, strides=(1, 1), data_format='channels_last',
+                     input_shape=(args.img_size, args.img_size, 1), padding='same', kernel_initializer='glorot_normal'))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
     model.add(Conv2D(128, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
@@ -45,6 +91,7 @@ def model_graph2():
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
     model.add(Conv2D(256, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
@@ -52,14 +99,17 @@ def model_graph2():
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
     model.add(Conv2D(512, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
     model.add(Conv2D(512, kernel_size=3, strides=(1, 1), padding='same', kernel_initializer='glorot_normal'))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
     model.add(Flatten())
     model.add(Dense(1024, activation='relu'))
     model.add(Dense(512, activation='relu'))
@@ -82,7 +132,8 @@ if __name__ == '__main__':
     img_test = images[split:]
     param_train = params[:split]
     param_test = params[split:]
-    model = model_graph2()
+    model = model_graph()
+    # model = model_graph2()
     model.fit(img_train, param_train, batch_size=args.batch, epochs=args.epochs, verbose=2,
               validation_data=(img_test, param_test))
 
