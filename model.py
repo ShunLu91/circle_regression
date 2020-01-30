@@ -5,7 +5,6 @@ from keras.optimizers import Adam
 from keras.models import model_from_json, Sequential
 from keras.layers import Dense, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
 
-
 # read arguments from command
 parser = argparse.ArgumentParser('Circle_Regression')
 parser.add_argument('--epochs', type=int, default=100, help='train epochs')
@@ -98,25 +97,26 @@ def find_circle(img, model):
     return pred
 
 
-if __name__ ==  '__main__':
-    if os.path.isfile('cnn_deeper.h5'):
-        json_file = open('cnn_deeper.json', 'r')
-        cnn_json = json_file.read()
-        json_file.close()
-        cnn = model_from_json(cnn_json)
-        cnn.load_weights("cnn_deeper.h5")
-    else:
-        cnn = model_graph()
-        cnn_json = cnn.to_json()
-        with open("cnn_deeper.json", "w") as json_file:
-            json_file.write(cnn_json)
-        cnn.save_weights("cnn_deeper.h5")
+if __name__ == '__main__':
+    # if os.path.isfile('cnn_deeper.h5'):
+    #     json_file = open('cnn_deeper.json', 'r')
+    #     cnn_json = json_file.read()
+    #     json_file.close()
+    #     cnn = model_from_json(cnn_json)
+    #     cnn.load_weights("cnn_deeper.h5")
+    # else:
+    #     model = model_graph()
+    #     cnn_json = model.to_json()
+    #     with open("cnn_deeper.json", "w") as json_file:
+    #         json_file.write(cnn_json)
+    #     model.save_weights("cnn_deeper.h5")
 
+    model = model_graph()
     results = []
     for _ in range(1000):
         params, img = noisy_circle(args.img_size, args.radius, args.noise)
-        detected = find_circle(img, cnn)
+        detected = find_circle(img, model)
         print(iou(params, detected))
         results.append(iou(params, detected))
     results = np.array(results)
-    print((results > 0.7).sum())
+    print('Num of IOU Images above 0.7:', (results > 0.7).sum())
