@@ -5,6 +5,7 @@ from keras.models import Model
 from keras.optimizers import Adam
 from keras.models import model_from_json, Sequential
 from keras.layers import Input, Dense, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
+np.random.seed(2020)
 
 # read arguments from command
 parser = argparse.ArgumentParser('Circle_Regression')
