@@ -1,19 +1,12 @@
 import re
 import argparse
 import numpy as np
-import tensorflow as tf
 import os, glob, datetime
-import keras.layers as KL
 import keras.backend as K
 from model import model_graph2
-from model_ori import network
 from keras.optimizers import SGD
-import matplotlib.pyplot as plt
-from keras.models import Model, load_model
+from main import noisy_circle, iou
 from keras.callbacks import CSVLogger, ModelCheckpoint, LearningRateScheduler
-from shapely.geometry.point import Point
-from skimage.draw import circle_perimeter_aa
-from main import noisy_circle, draw_circle, iou
 
 K.clear_session()
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'

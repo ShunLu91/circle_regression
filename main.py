@@ -1,7 +1,6 @@
 import numpy as np
 from shapely.geometry.point import Point
 from skimage.draw import circle_perimeter_aa
-import matplotlib.pyplot as plt
 
 
 def draw_circle(img, row, col, rad):

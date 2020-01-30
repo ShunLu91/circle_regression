@@ -18,6 +18,7 @@ parser.add_argument('--seed', type=int, default=2020, help='num of training imag
 args = parser.parse_args()
 print(args)
 
+
 # generate data
 def data_generator(samples, size, radius, noise):
     params = []
