@@ -14,6 +14,7 @@ parser.add_argument('--img_size', type=int, default=200, help='img_size')
 parser.add_argument('--radius', type=int, default=50, help='radius')
 parser.add_argument('--noise', type=int, default=2, help='noise')
 parser.add_argument('--num', type=int, default=10000, help='num of training images')
+parser.add_argument('--spilt_rate', type=float, default=0.1, help='num of training images')
 parser.add_argument('--seed', type=int, default=2020, help='num of training images')
 args = parser.parse_args()
 print(args)
@@ -128,7 +129,7 @@ def find_circle(img, model):
 
 if __name__ == '__main__':
     images, params = data_generator(args.num, args.img_size, args.radius, args.noise)
-    split = int(0.7 * args.num)
+    split = int(args.spilt_rate * args.num)
     img_train = images[:split]
     img_test = images[split:]
     param_train = params[:split]
