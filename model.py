@@ -1,9 +1,8 @@
-import os
 import argparse
 from main import *
 from keras.models import Model
 from keras.optimizers import Adam
-from keras.models import model_from_json, Sequential
+from keras.models import Sequential
 from keras.layers import Input, Dense, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
 
 # read arguments from command
@@ -171,6 +170,7 @@ if __name__ == '__main__':
     param_test = params[split:]
     model = model_light()
     model.summary()
+
     # model train
     model.fit(img_train, param_train, batch_size=args.batch, epochs=args.epochs, verbose=2,
               validation_data=(img_test, param_test))
