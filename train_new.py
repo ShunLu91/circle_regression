@@ -3,61 +3,62 @@ import tensorflow as tf
 from shapely.geometry.point import Point
 from skimage.draw import circle_perimeter_aa
 import matplotlib.pyplot as plt
-from keras.layers import Dense, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
 import os
-from keras.optimizers import SGD, Adam
+from main import *
+from keras.optimizers import Adam
 from keras.models import model_from_json, Sequential
+from keras.layers import Dense, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
 
 
-def draw_circle(img, row, col, rad):
-    rr, cc, val = circle_perimeter_aa(row, col, rad)
-    valid = (
-            (rr >= 0) &
-            (rr < img.shape[0]) &
-            (cc >= 0) &
-            (cc < img.shape[1])
-    )
-    img[rr[valid], cc[valid]] = val[valid]
-
-
-# just to test with
-def clean_circle(size, radius, noise):
-    img = np.zeros((size, size), dtype=np.float)
-
-    # Circle
-    row = np.random.randint(size)  # exclusive of high, in this case from 0 to 199
-    col = np.random.randint(size)
-    rad = np.random.randint(10, max(10, radius))
-    draw_circle(img, row, col, rad)
-
-    return (row, col, rad), img
-
-
-def noisy_circle(size, radius, noise):
-    img = np.zeros((size, size), dtype=np.float)
-
-    # Circle
-    row = np.random.randint(size)  # exclusive of high, in this case from 0 to 199
-    col = np.random.randint(size)
-    rad = np.random.randint(10, max(10, radius))
-    draw_circle(img, row, col, rad)
-
-    # Noise
-    img += noise * np.random.rand(*img.shape)
-    return (row, col, rad), img
-
-
-def iou(params0, params1):
-    row0, col0, rad0 = params0
-    row1, col1, rad1 = params1
-
-    shape0 = Point(row0, col0).buffer(rad0)
-    shape1 = Point(row1, col1).buffer(rad1)
-
-    return (
-            shape0.intersection(shape1).area /
-            shape0.union(shape1).area
-    )
+# def draw_circle(img, row, col, rad):
+#     rr, cc, val = circle_perimeter_aa(row, col, rad)
+#     valid = (
+#             (rr >= 0) &
+#             (rr < img.shape[0]) &
+#             (cc >= 0) &
+#             (cc < img.shape[1])
+#     )
+#     img[rr[valid], cc[valid]] = val[valid]
+#
+#
+# # just to test with
+# def clean_circle(size, radius, noise):
+#     img = np.zeros((size, size), dtype=np.float)
+#
+#     # Circle
+#     row = np.random.randint(size)  # exclusive of high, in this case from 0 to 199
+#     col = np.random.randint(size)
+#     rad = np.random.randint(10, max(10, radius))
+#     draw_circle(img, row, col, rad)
+#
+#     return (row, col, rad), img
+#
+#
+# def noisy_circle(size, radius, noise):
+#     img = np.zeros((size, size), dtype=np.float)
+#
+#     # Circle
+#     row = np.random.randint(size)  # exclusive of high, in this case from 0 to 199
+#     col = np.random.randint(size)
+#     rad = np.random.randint(10, max(10, radius))
+#     draw_circle(img, row, col, rad)
+#
+#     # Noise
+#     img += noise * np.random.rand(*img.shape)
+#     return (row, col, rad), img
+#
+#
+# def iou(params0, params1):
+#     row0, col0, rad0 = params0
+#     row1, col1, rad1 = params1
+#
+#     shape0 = Point(row0, col0).buffer(rad0)
+#     shape1 = Point(row1, col1).buffer(rad1)
+#
+#     return (
+#             shape0.intersection(shape1).area /
+#             shape0.union(shape1).area
+#     )
 
 
 # 6 minutes when trained on Tesla K80 in Google Colab notebook
