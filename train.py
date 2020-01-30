@@ -5,6 +5,7 @@ import tensorflow as tf
 import os, glob, datetime
 import keras.layers as KL
 import keras.backend as K
+from model import model_graph2
 from model_ori import network
 from keras.optimizers import SGD
 import matplotlib.pyplot as plt
@@ -84,23 +85,24 @@ def lr_schedule(epoch):
     return lr
 
 
-model = network(size, filters=32)
+# model = network(size, filters=32)
+model = model_graph2()
 model.summary()
 
-initial_epoch = findLastCheckpoint(save_dir=save_dir)
-if initial_epoch > 0:
-    print('resuming by loading epoch %03d' % initial_epoch)
-    model = load_model(os.path.join(save_dir, 'model_%03d.hdf5' % initial_epoch), compile=False)
+# initial_epoch = findLastCheckpoint(save_dir=save_dir)
+# if initial_epoch > 0:
+#     print('resuming by loading epoch %03d' % initial_epoch)
+#     model = load_model(os.path.join(save_dir, 'model_%03d.hdf5' % initial_epoch), compile=False)
 
 # compile the model
 optim = SGD(lr=args.lr, momentum=0.9, decay=0.0005)
 model.compile(optimizer=optim, loss='mean_squared_error')
-checkpointer = ModelCheckpoint(os.path.join(save_dir, 'model_{epoch:03d}.hdf5'), verbose=1,
+checkpointer = ModelCheckpoint(os.path.join(save_dir, 'model_{epoch:03d}.hdf5'), verbose=2,
                                save_weights_only=False, period=10)
 csv_logger = CSVLogger(os.path.join(save_dir, 'log.csv'), append=True, separator=',')
 lr_scheduler = LearningRateScheduler(lr_schedule)
-history = model.fit(x_train, y_train, initial_epoch=initial_epoch, shuffle=True, validation_split=0.3,
-                    batch_size=args.batch, epochs=args.epochs, verbose=1,
+history = model.fit(x_train, y_train, initial_epoch=0, shuffle=True, validation_split=0.3,
+                    batch_size=args.batch, epochs=args.epochs, verbose=2,
                     callbacks=[checkpointer, csv_logger, lr_scheduler])
 
 # model = load_model(os.path.join('models', 'model_010.hdf5'), compile=False)
