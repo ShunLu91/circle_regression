@@ -5,7 +5,7 @@ import tensorflow as tf
 import os, glob, datetime
 import keras.layers as KL
 import keras.backend as K
-from model import network
+from model_ori import network
 from keras.optimizers import SGD
 import matplotlib.pyplot as plt
 from keras.models import Model, load_model
