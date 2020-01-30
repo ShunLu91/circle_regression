@@ -143,8 +143,8 @@ def model_light():
     x = MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(x)
 
     x = Flatten()(x)
-    x = Dense(256, activation='relu')(x)
-    x = Dense(128, activation='relu')(x)
+    x = Dense(144, activation='relu')(x)
+    x = Dense(72, activation='relu')(x)
     y = Dense(3)(x)
 
     model = Model(inputs=input, outputs=y)
