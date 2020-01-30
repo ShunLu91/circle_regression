@@ -5,7 +5,6 @@ from keras.models import Model
 from keras.optimizers import Adam
 from keras.models import model_from_json, Sequential
 from keras.layers import Input, Dense, Activation, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
-np.random.seed(2020)
 
 # read arguments from command
 parser = argparse.ArgumentParser('Circle_Regression')
@@ -15,10 +14,11 @@ parser.add_argument('--img_size', type=int, default=200, help='img_size')
 parser.add_argument('--radius', type=int, default=50, help='radius')
 parser.add_argument('--noise', type=int, default=2, help='noise')
 parser.add_argument('--num', type=int, default=10000, help='num of training images')
+parser.add_argument('--seed', type=int, default=2020, help='num of training images')
 args = parser.parse_args()
 print(args)
 
-
+np.random.seed(args.seed)
 # generate data
 def data_generator(samples, size, radius, noise):
     params = []
